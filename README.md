@@ -1,3 +1,3 @@
 # 概要
-hoge
+hogehoge
 PrAha Challengeの設計課題の雛形に使用するレポジトリです
