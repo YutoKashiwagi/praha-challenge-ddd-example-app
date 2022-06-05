@@ -17,4 +17,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '12.x'
-      - run: docker-compose -f ./.docker/docker-compose.yml build && docker-compose -f ./.docker/docker-compose.yml up -d && cd ./backend && yarn install && yarn lint && yarn test:unit && yarn test:integration
+      - run: | 
+          docker-compose -f ./.docker/docker-compose.yml build
+          docker-compose -f ./.docker/docker-compose.yml up -d
+          cd ./backend
+          yarn install
+          yarn lint
+          yarn test:unit
+          yarn test:integration
