@@ -23,7 +23,7 @@ describe('do', () => {
     ).resolves.toBe(undefined)
   })
   it('[異常系]: someDataRepo.saveで例外が発生した場合、例外が発生する', () => {
-    const ERROR_MESSAGE = 'error!'
+    const ERROR_MESSAGE = 'hoge!'
     mockSomeDataRepo.save.mockRejectedValueOnce(ERROR_MESSAGE)
     const usecase = new PostSomeDataUseCase(mockSomeDataRepo)
     return expect(
