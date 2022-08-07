@@ -10,7 +10,7 @@ export class ParticipantName {
     this.name = name
   }
 
-  public value() {
+  get value() {
     return this.name
   }
 }

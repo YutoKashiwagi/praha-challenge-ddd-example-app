@@ -7,6 +7,6 @@ describe('正しい形式のメールアドレスのみ有効', () => {
   })
 
   it('正しい形式の場合は許可されること', () => {
-    expect(new ParticipantMailAddress('hogehoge@example.com').value()).toBe('hogehoge@example.com')
+    expect(new ParticipantMailAddress('hogehoge@example.com').value).toBe('hogehoge@example.com')
   })
 })

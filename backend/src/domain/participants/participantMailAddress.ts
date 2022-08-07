@@ -8,7 +8,7 @@ export class ParticipantMailAddress {
     this.mailAddress = mailAddress
   }
 
-  public value() {
+  get value() {
     return this.mailAddress
   }
 
