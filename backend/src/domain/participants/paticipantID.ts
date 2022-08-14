@@ -1,7 +1,7 @@
 export class ParticipantID {
   private id: number
   constructor(id: number) {
-    this.id = id    
+    this.id = id
   }
 
   get value() {

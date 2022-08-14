@@ -1,4 +1,4 @@
-import { ParticipantName } from "src/domain/participants/participantName"
+import { ParticipantName } from 'src/domain/participants/participantName'
 
 describe('1~50文字の参加者名のみ有効であること', () => {
   it('空文字列は無効であること', () => {
@@ -11,6 +11,8 @@ describe('1~50文字の参加者名のみ有効であること', () => {
   })
 
   it('51文字以上は無効であること', () => {
-    expect(() => new ParticipantName('a'.repeat(51))).toThrow('参加者名は1~50文字までです')
+    expect(() => new ParticipantName('a'.repeat(51))).toThrow(
+      '参加者名は1~50文字までです',
+    )
   })
 })

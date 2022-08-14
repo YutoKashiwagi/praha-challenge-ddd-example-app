@@ -13,6 +13,7 @@ export class ParticipantMailAddress {
   }
 
   private isValidMailAddress(mailAddress: string) {
+    // todo: 正規表現直す
     const mailAddressRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}/
     return mailAddressRegex.test(mailAddress)
   }

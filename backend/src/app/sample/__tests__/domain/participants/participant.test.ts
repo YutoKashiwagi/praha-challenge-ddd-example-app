@@ -1,8 +1,8 @@
-import { Participant } from "src/domain/participants/participant"
-import { ParticipantMailAddress } from "src/domain/participants/participantMailAddress"
-import { ParticipantName } from "src/domain/participants/participantName"
-import { ParticipantStatus } from "src/domain/participants/participantStatus"
-import { ParticipantID } from "src/domain/participants/paticipantID"
+import { Participant } from 'src/domain/participants/participant'
+import { ParticipantMailAddress } from 'src/domain/participants/participantMailAddress'
+import { ParticipantName } from 'src/domain/participants/participantName'
+import { ParticipantStatus } from 'src/domain/participants/participantStatus'
+import { ParticipantID } from 'src/domain/participants/paticipantID'
 
 describe('参加者エンティティを生成できる', () => {
   it('インスタンスを生成でき、値を取得できること', () => {
@@ -14,7 +14,7 @@ describe('参加者エンティティを生成できる', () => {
       id,
       mailAddress,
       name,
-      status
+      status,
     })
     expect(participant).toBeInstanceOf(Participant)
   })
@@ -30,7 +30,7 @@ describe('在籍中か判定できる', () => {
       id,
       mailAddress,
       name,
-      status
+      status,
     })
     expect(participant.isActive()).toEqual(true)
   })
@@ -44,7 +44,7 @@ describe('在籍中か判定できる', () => {
       id,
       mailAddress,
       name,
-      status
+      status,
     })
     expect(participant.isActive()).toEqual(false)
   })
