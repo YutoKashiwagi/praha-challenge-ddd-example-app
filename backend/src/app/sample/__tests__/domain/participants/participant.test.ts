@@ -17,6 +17,35 @@ describe('参加者エンティティを生成できる', () => {
       status
     })
     expect(participant).toBeInstanceOf(Participant)
-    // TODO: 値の取得
+  })
+})
+
+describe('在籍中か判定できる', () => {
+  it('在籍中の場合、trueを返すこと', () => {
+    const id = new ParticipantID(1)
+    const mailAddress = new ParticipantMailAddress('hoge@example.com')
+    const name = new ParticipantName('hoge')
+    const status = new ParticipantStatus('在籍中')
+    const participant = new Participant({
+      id,
+      mailAddress,
+      name,
+      status
+    })
+    expect(participant.isActive()).toEqual(true)
+  })
+
+  it('在籍中以外の場合、falseを返すこと', () => {
+    const id = new ParticipantID(1)
+    const mailAddress = new ParticipantMailAddress('hoge@example.com')
+    const name = new ParticipantName('hoge')
+    const status = new ParticipantStatus('休会中')
+    const participant = new Participant({
+      id,
+      mailAddress,
+      name,
+      status
+    })
+    expect(participant.isActive()).toEqual(false)
   })
 })

@@ -21,5 +21,10 @@ export class Participant {
     this.mailAddress = props.mailAddress
     this.name = props.name
     this.status = props.status
-  }  
+  }
+
+  public isActive() {
+    // status側に判定ロジックを持たせるべきか悩む
+    return this.status.value() === '在籍中'
+  }
 }
