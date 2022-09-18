@@ -1,4 +1,4 @@
-import { PairName } from "src/domain/pairs/pairName"
+import { PairName } from 'src/domain/pairs/pairName'
 
 describe('ペア名を作成できる', () => {
   it('小文字のアルファベット一文字のペア名を作成できること', () => {
@@ -7,8 +7,12 @@ describe('ペア名を作成できる', () => {
   })
 
   it('小文字のアルファベット以外は無効であること', () => {
-    expect(() => new PairName('A')).toThrow('ペア名は小文字のアルファベットのみ有効です')
-    expect(() => new PairName('!')).toThrow('ペア名は小文字のアルファベットのみ有効です')
+    expect(() => new PairName('A')).toThrow(
+      'ペア名は小文字のアルファベットのみ有効です',
+    )
+    expect(() => new PairName('!')).toThrow(
+      'ペア名は小文字のアルファベットのみ有効です',
+    )
   })
 })
 
