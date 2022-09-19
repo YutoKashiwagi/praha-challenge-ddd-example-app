@@ -2,7 +2,7 @@ import { Pair } from 'src/domain/pairs/pair'
 import { PairName } from 'src/domain/pairs/pairName'
 import { ParticipantStatus } from 'src/domain/participants/participantStatus'
 import { ParticipantID } from 'src/domain/participants/paticipantID'
-import { mockedParticipant } from '../../../../../../testUtil/domain/partcipant-factory' // なぜか相対パスじゃないと読み込まれない
+import { mockedParticipant } from '@testUtil/domain/partcipant-factory'
 
 describe('ペアを作成できる', () => {
   it('1名以下の場合、無効であること', () => {
