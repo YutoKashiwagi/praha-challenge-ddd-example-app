@@ -1,13 +1,14 @@
+import { UUID } from 'src/util/uuid'
 import { Participant } from '../participants/participant'
 import { PairName } from './pairName'
-// TODO: ペア名を持たせる
 export class Pair {
   static readonly PARTICIPANT_MIN_LENGTH = 2
   static readonly PARTICIPANT_MAX_LENGTH = 3
-  private participants: Participant[]
-  private pairName: PairName
+  public readonly participants: Participant[]
+  public readonly pairName: PairName
+  public readonly id: UUID
 
-  constructor(participants: Participant[], pairName: PairName) {
+  constructor(id: UUID, participants: Participant[], pairName: PairName) {
     // 人数制限
     if (
       participants.length < Pair.PARTICIPANT_MIN_LENGTH ||
@@ -18,10 +19,15 @@ export class Pair {
     this.ensureAllParticipantsActive(participants)
     this.participants = participants
     this.pairName = pairName
+    this.id = id
   }
 
   public addParticipant(participant: Participant) {
-    return new Pair(this.participants.concat([participant]), this.pairName)
+    return new Pair(
+      this.id,
+      this.participants.concat([participant]),
+      this.pairName,
+    )
   }
 
   public removeParticipant(participant: Participant) {
@@ -35,12 +41,12 @@ export class Pair {
     if (newParticipants.length === this.participants.length) {
       throw 'ペアに参加者が含まれていません'
     }
-    return new Pair(newParticipants, this.pairName)
+    return new Pair(this.id, newParticipants, this.pairName)
   }
 
   public nextPair(participants: Participant[]) {
     // ペアが上限になった場合のエラーハンドリングは面倒なので行わない
-    return new Pair(participants, this.pairName.next())
+    return new Pair(UUID.create(), participants, this.pairName.next())
   }
 
   private ensureAllParticipantsActive(participants: Participant[]) {
