@@ -7,12 +7,12 @@ export class TeamName {
     }
     this.name = name
   }
-  
+
   public value() {
     return this.name
   }
 
   private isValidValue(value: number) {
-    return Number.isInteger(value) && (value >= 1 && value <= 999)
+    return Number.isInteger(value) && value >= 1 && value <= 999
   }
 }
