@@ -13,3 +13,10 @@ model SomeData {
   required Boolean
   number   Int     @db.SmallInt
 }
+
+model Participant {
+  id          String @id
+  name        String
+  mailAddress String @unique
+  status      String // TODO: 別テーブルにする
+}
