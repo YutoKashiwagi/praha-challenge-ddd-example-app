@@ -1,16 +1,16 @@
+import { UUID } from 'src/util/uuid'
 import { ParticipantMailAddress } from './participantMailAddress'
 import { ParticipantName } from './participantName'
 import { ParticipantStatus } from './participantStatus'
-import { ParticipantID } from './paticipantID'
 
 type props = {
-  id: ParticipantID
+  id: UUID
   mailAddress: ParticipantMailAddress
   name: ParticipantName
   status: ParticipantStatus
 }
 export class Participant {
-  private _id: ParticipantID
+  private _id: UUID
   private _mailAddress: ParticipantMailAddress
   private _name: ParticipantName
   private _status: ParticipantStatus

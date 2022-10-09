@@ -1,7 +1,6 @@
 import { Pair } from 'src/domain/pairs/pair'
 import { PairName } from 'src/domain/pairs/pairName'
 import { ParticipantStatus } from 'src/domain/participants/participantStatus'
-import { ParticipantID } from 'src/domain/participants/paticipantID'
 import { mockedParticipant } from '@testUtil/domain/partcipant-factory'
 import { UUID } from 'src/util/uuid'
 
@@ -125,15 +124,11 @@ describe('ペアから参加者を削除できる', () => {
   it('削除したい参加者がペアに含まれていない場合、例外が発生すること', () => {
     const pair = new Pair(
       UUID.create(),
-      [
-        mockedParticipant({ id: new ParticipantID(1) }),
-        mockedParticipant({ id: new ParticipantID(2) }),
-        mockedParticipant({ id: new ParticipantID(3) }),
-      ],
+      [mockedParticipant(), mockedParticipant(), mockedParticipant()],
       new PairName('a'),
     )
 
-    const notExistParticipant = mockedParticipant({ id: new ParticipantID(4) })
+    const notExistParticipant = mockedParticipant()
     expect(() => pair.removeParticipant(notExistParticipant)).toThrow(
       'ペアに参加者が含まれていません',
     )
@@ -144,16 +139,10 @@ describe('次のペアを作成できる', () => {
   it('次のペアを作成できること', () => {
     const latestPair = new Pair(
       UUID.create(),
-      [
-        mockedParticipant({ id: new ParticipantID(1) }),
-        mockedParticipant({ id: new ParticipantID(2) }),
-      ],
+      [mockedParticipant(), mockedParticipant()],
       new PairName('a'),
     )
-    const nextPairParticipants = [
-      mockedParticipant({ id: new ParticipantID(3) }),
-      mockedParticipant({ id: new ParticipantID(4) }),
-    ]
+    const nextPairParticipants = [mockedParticipant(), mockedParticipant()]
     const nextPair = latestPair.nextPair(nextPairParticipants)
     expect(nextPair.participants).toEqual(nextPairParticipants)
     expect(nextPair.pairName).toEqual(new PairName('b'))
