@@ -2,19 +2,19 @@ import * as faker from 'faker'
 import { ParticipantMailAddress } from "src/domain/participants/participantMailAddress"
 import { ParticipantName } from "src/domain/participants/participantName"
 import { ParticipantStatus } from "src/domain/participants/participantStatus"
-import { ParticipantID } from "src/domain/participants/paticipantID"
 import { Participant } from "src/domain/participants/participant"
+import { UUID } from 'src/util/uuid'
 
 export const mockedParticipant = (
   props: {
-    id?: ParticipantID
+    id?: UUID
     name?: ParticipantName
     mailAddress?: ParticipantMailAddress
     status?: ParticipantStatus
   } = {},
 ) => {
   return new Participant({
-    id: props.id ?? new ParticipantID(faker.random.number()),
+    id: props.id ?? UUID.create(),
     name: props.name ?? new ParticipantName('hoge'),
     mailAddress:
       props.mailAddress ??
