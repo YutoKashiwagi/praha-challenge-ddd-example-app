@@ -42,4 +42,39 @@ describe('participant-repository.integration.ts', () => {
       expect(allParticipants[0]).toEqual(expectedParticipantData)
     })
   })
+
+  describe('find', () => {
+    afterEach(async () => {
+      await prisma.participant.deleteMany()
+    })
+
+    it('対象のparticipantを取得できること', async () => {
+      const id = UUID.create()
+      const mailAddress = new ParticipantMailAddress('hoge@example.com')
+      const name = new ParticipantName('hoge')
+      const status = new ParticipantStatus('休会中')
+      await prisma.participant.create({
+        data: {
+          id: id.value,
+          mailAddress: mailAddress.value,
+          name: name.value,
+          status: status.value(),
+        },
+      })
+
+      const expectedParticipant = new Participant({
+        id,
+        mailAddress,
+        name,
+        status,
+      })
+      const foundParticipant = await participantRepo.find(id)
+      expect(foundParticipant).toEqual(expectedParticipant)
+    })
+
+    it('対象のparticipantが存在しない場合、nullを返すこと', async () => {
+      const result = await participantRepo.find(UUID.create())
+      expect(result).toBeNull()
+    })
+  })
 })
