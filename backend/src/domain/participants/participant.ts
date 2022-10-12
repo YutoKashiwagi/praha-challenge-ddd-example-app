@@ -26,6 +26,15 @@ export class Participant {
     return this._id.value
   }
 
+  public getAllProperties() {
+    return {
+      id: this._id.value,
+      mailAddress: this._mailAddress.value,
+      name: this._name.value,
+      status: this._status.value(),
+    }
+  }
+
   public isActive() {
     // status側に判定ロジックを持たせるべきか悩む
     return this._status.value() === '在籍中'

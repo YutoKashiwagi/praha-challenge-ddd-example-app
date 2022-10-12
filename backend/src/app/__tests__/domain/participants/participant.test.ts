@@ -49,3 +49,24 @@ describe('在籍中か判定できる', () => {
     expect(participant.isActive()).toEqual(false)
   })
 })
+
+describe('全てのプロパティを取得できること', () => {
+  it('全てのプロパティを取得できること', () => {
+    const id = UUID.create()
+    const mailAddress = new ParticipantMailAddress('hoge@example.com')
+    const name = new ParticipantName('hoge')
+    const status = new ParticipantStatus('休会中')
+    const participant = new Participant({
+      id,
+      mailAddress,
+      name,
+      status,
+    })
+
+    const AllProperties = participant.getAllProperties()
+    expect(AllProperties.id).toEqual(id.value)
+    expect(AllProperties.mailAddress).toEqual(mailAddress.value)
+    expect(AllProperties.name).toEqual(name.value)
+    expect(AllProperties.status).toEqual(status.value())
+  })
+})
