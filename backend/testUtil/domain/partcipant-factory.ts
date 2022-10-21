@@ -4,6 +4,7 @@ import { ParticipantName } from "src/domain/participants/participantName"
 import { ParticipantStatus } from "src/domain/participants/participantStatus"
 import { Participant } from "src/domain/participants/participant"
 import { UUID } from 'src/util/uuid'
+import { PrismaClient } from '@prisma/client'
 
 export const mockedParticipant = (
   props: {
@@ -23,4 +24,24 @@ export const mockedParticipant = (
       ),
     status: props.status ?? new ParticipantStatus('在籍中'),
   })
+}
+
+export const seedParticipants = async (prisma: PrismaClient, participants: Participant[]) => {
+  for (const participant of participants) {
+    const {
+      id,
+      mailAddress,
+      name,
+      status,
+    } = participant.getAllProperties()
+
+    await prisma.participant.create({
+      data: {
+        id,
+        mailAddress,
+        name,
+        status
+      }
+    })
+  }
 }

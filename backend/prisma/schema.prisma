@@ -20,3 +20,15 @@ model Participant {
   mailAddress String @unique
   status      String // TODO: 別テーブルにする
 }
+
+model Pair {
+  id          String @id
+  name        String @unique
+}
+
+model PairParticipant {
+  pairID        String
+  participantID String
+  
+  @@id([pairID, participantID])
+}

@@ -20,3 +20,21 @@ CREATE TABLE "Participant" (
 -- CreateIndex
 CREATE UNIQUE INDEX "Participant.mailAddress_unique" ON "Participant"("mailAddress");
 
+-- CreateTable
+CREATE TABLE "Pair" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PairParticipant" (
+    "pairID" TEXT NOT NULL,
+    "participantID" TEXT NOT NULL,
+
+    PRIMARY KEY ("pairID","participantID")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Pair.name_unique" ON "Pair"("name");
