@@ -38,3 +38,10 @@ CREATE TABLE "PairParticipant" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Pair.name_unique" ON "Pair"("name");
+
+-- AddForeignKey
+ALTER TABLE "PairParticipant" ADD FOREIGN KEY ("pairID") REFERENCES "Pair"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PairParticipant" ADD FOREIGN KEY ("participantID") REFERENCES "Participant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
