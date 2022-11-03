@@ -22,6 +22,19 @@ export class Pair {
     this.id = id
   }
 
+  public getAllProperties() {
+    return {
+      id: this.id.value,
+      participants: this.participants.map((participant) => {
+        return {
+          pairID: this.id.value,
+          participantID: participant.id(),
+        }
+      }),
+      name: this.pairName.value,
+    }
+  }
+
   public addParticipant(participant: Participant) {
     return new Pair(
       this.id,
