@@ -61,6 +61,32 @@ describe('ペアを作成できる', () => {
   })
 })
 
+describe('全てのプロパティを取得できる', () => {
+  it('全てのプロパティを取得できる', () => {
+    const pairID = UUID.create()
+    const participant1 = mockedParticipant()
+    const participant2 = mockedParticipant()
+    const participants = [participant1, participant2]
+    const pairName = new PairName('a')
+    const pair = new Pair(pairID, participants, pairName)
+
+    expect(pair.getAllProperties()).toEqual({
+      id: pairID.value,
+      participants: [
+        {
+          pairID: pairID.value,
+          participantID: participant1.id(),
+        },
+        {
+          pairID: pairID.value,
+          participantID: participant2.id(),
+        },
+      ],
+      name: pairName.value,
+    })
+  })
+})
+
 describe('ペアに参加者を追加できる', () => {
   it('ペアの人数が2名の場合、追加できること', () => {
     const participants = [mockedParticipant(), mockedParticipant()]
