@@ -1,5 +1,5 @@
 import { UUID } from 'src/util/uuid'
-import { uuid, isUuid } from 'uuidv4'
+import { isUuid } from 'uuidv4'
 
 describe('文字列からインスタンスを生成できる', () => {
   it('uuidインスタンスを作成できる', () => {
