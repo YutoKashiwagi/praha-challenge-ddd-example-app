@@ -1,65 +1,161 @@
 import { prisma } from '@testUtil/prisma'
-import { ParticipantRepository } from 'src/infra/db/repository/participant/participant-repository'
 import { UUID } from 'src/util/uuid'
-import { ParticipantMailAddress } from 'src/domain/participants/participantMailAddress'
-import { ParticipantName } from 'src/domain/participants/participantName'
-import { ParticipantStatus } from 'src/domain/participants/participantStatus'
-import { Participant } from 'src/domain/participants/participant'
-import { mockedParticipant, seedParticipants } from '@testUtil/domain/partcipant-factory'
+import {
+  mockedParticipant,
+  seedParticipants,
+} from '@testUtil/domain/partcipant-factory'
+import { Pair } from 'src/domain/pairs/pair'
+import { PairName } from 'src/domain/pairs/pairName'
+import { PairRepository } from 'src/infra/db/repository/pair/pair-repository'
 
-describe('participant-repository.integration.ts', () => {
-  const participantRepo = new ParticipantRepository(prisma)
+describe('pair-repository.integration.ts', () => {
+  const pairRepo = new PairRepository(prisma)
   beforeAll(async () => {
-    await prisma.participant.deleteMany({})
+    await prisma.pairParticipant.deleteMany()
+    await prisma.participant.deleteMany()
+    await prisma.pair.deleteMany()
+  })
+  afterEach(async () => {
+    await prisma.pairParticipant.deleteMany()
+    await prisma.participant.deleteMany()
+    await prisma.pair.deleteMany()
   })
   afterAll(async () => {
     await prisma.$disconnect()
   })
-  
+
   describe('save', () => {
-    afterEach(async () => {
-      await prisma.participant.deleteMany()
-    })
-    it('[正常系]pairを保存できる', async () => {
+    it('[正常系]pairを新規作成できる', async () => {
       const participants = [mockedParticipant(), mockedParticipant()]
       seedParticipants(prisma, participants)
 
-      expect(await prisma.participant.count()).toEqual(2)
+      const pairID = UUID.create()
+      const pair = new Pair(pairID, participants, new PairName('a'))
+      await pairRepo.save(pair)
+
+      const savedPair = await prisma.pair.findUnique({
+        where: { id: pairID.value },
+      })
+      expect(savedPair?.id).toEqual(pairID.value)
+      expect(savedPair?.name).toEqual(pair.pairName.value)
+
+      const savedPairPariticiapnts = await prisma.pairParticipant.findMany({
+        where: {
+          pairID: pairID.value,
+        },
+      })
+      expect(savedPairPariticiapnts).toHaveLength(2)
+      expect(savedPairPariticiapnts).toContainEqual({
+        pairID: pairID.value,
+        participantID: participants[0]?.id(),
+      })
+      expect(savedPairPariticiapnts).toContainEqual({
+        pairID: pairID.value,
+        participantID: participants[1]?.id(),
+      })
+    })
+
+    it('[正常系]pairのメンバーを更新できる', async () => {
+      // participantsとpairNameを更新できる
+      const participant1 = mockedParticipant()
+      const participant2 = mockedParticipant()
+      const participant3 = mockedParticipant()
+      seedParticipants(prisma, [participant1, participant2, participant3])
+
+      const pairID = UUID.create()
+      await prisma.pair.create({
+        data: {
+          id: pairID.value,
+          name: 'a',
+        },
+      })
+      await prisma.pairParticipant.createMany({
+        data: [{ pairID: pairID.value, participantID: participant1.id() }],
+      })
+
+      const pair = new Pair(
+        pairID,
+        [participant2, participant3],
+        new PairName('b'),
+      )
+      await pairRepo.save(pair)
+
+      const savedPair = await prisma.pair.findUnique({
+        where: { id: pairID.value },
+      })
+      expect(savedPair?.id).toEqual(pairID.value)
+      expect(savedPair?.name).toEqual('b')
+
+      const savedPairPariticiapnts = await prisma.pairParticipant.findMany({
+        where: {
+          pairID: pairID.value,
+        },
+      })
+      expect(savedPairPariticiapnts).toHaveLength(2)
+      expect(savedPairPariticiapnts).toContainEqual({
+        pairID: pairID.value,
+        participantID: participant2.id(),
+      })
+      expect(savedPairPariticiapnts).toContainEqual({
+        pairID: pairID.value,
+        participantID: participant3.id(),
+      })
     })
   })
 
   describe('find', () => {
-    afterEach(async () => {
-      await prisma.participant.deleteMany()
-    })
+    it('[正常系]対象のPairを返すこと', async () => {
+      // pair1, pair2を作成し、pair1をfindする
+      const participant1 = mockedParticipant()
+      const participant2 = mockedParticipant()
+      const participant3 = mockedParticipant()
+      const participant4 = mockedParticipant()
+      seedParticipants(prisma, [
+        participant1,
+        participant2,
+        participant3,
+        participant4,
+      ])
 
-    it('対象のparticipantを取得できること', async () => {
-      const id = UUID.create()
-      const mailAddress = new ParticipantMailAddress('hoge@example.com')
-      const name = new ParticipantName('hoge')
-      const status = new ParticipantStatus('休会中')
-      await prisma.participant.create({
+      // pair1のseed
+      const pair1ID = UUID.create()
+      await prisma.pair.create({
         data: {
-          id: id.value,
-          mailAddress: mailAddress.value,
-          name: name.value,
-          status: status.value(),
+          id: pair1ID.value,
+          name: 'a',
         },
       })
-
-      const expectedParticipant = new Participant({
-        id,
-        mailAddress,
-        name,
-        status,
+      await prisma.pairParticipant.createMany({
+        data: [
+          { pairID: pair1ID.value, participantID: participant1.id() },
+          { pairID: pair1ID.value, participantID: participant2.id() },
+        ],
       })
-      const foundParticipant = await participantRepo.find(id)
-      expect(foundParticipant).toEqual(expectedParticipant)
+
+      // pair2のseed
+      const pair2ID = UUID.create()
+      await prisma.pair.create({
+        data: {
+          id: pair2ID.value,
+          name: 'b',
+        },
+      })
+      await prisma.pairParticipant.createMany({
+        data: [
+          { pairID: pair2ID.value, participantID: participant3.id() },
+          { pairID: pair2ID.value, participantID: participant4.id() },
+        ],
+      })
+
+      const foundPair = await pairRepo.find(pair1ID)
+      expect(foundPair).toEqual(
+        new Pair(pair1ID, [participant1, participant2], new PairName('a')),
+      )
     })
 
-    it('対象のparticipantが存在しない場合、nullを返すこと', async () => {
-      const result = await participantRepo.find(UUID.create())
-      expect(result).toBeNull()
+    it('[正常系]対象のPairが見つからない場合、nullを返すこと', async () => {
+      const id = UUID.create()
+      expect(await pairRepo.find(id)).toBeNull()
     })
   })
 })

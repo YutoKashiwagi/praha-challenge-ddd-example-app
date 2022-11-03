@@ -1,7 +1,14 @@
 import { PrismaClient } from '@prisma/client'
 import { IPairRepository } from 'src/app/repository-interface.ts/pair/pair-repository'
 import { Pair } from 'src/domain/pairs/pair'
+import { PairName } from 'src/domain/pairs/pairName'
 import { Participant } from 'src/domain/participants/participant'
+import { ParticipantMailAddress } from 'src/domain/participants/participantMailAddress'
+import { ParticipantName } from 'src/domain/participants/participantName'
+import {
+  ParticipantStatus,
+  ParticipantType,
+} from 'src/domain/participants/participantStatus'
 import { UUID } from 'src/util/uuid'
 
 export class PairRepository implements IPairRepository {
@@ -11,41 +18,64 @@ export class PairRepository implements IPairRepository {
   }
 
   public async save(pair: Pair): Promise<Pair> {
-    // const {
-    //   id,
-    //   mailAddress,
-    //   name,
-    //   status,
-    // } = participantEntity.getAllProperties()
+    const { id, participants, name } = pair.getAllProperties()
 
-    // await this.prismaClient.participant.create({
-    //   data: {
-    //     id,
-    //     mailAddress,
-    //     name,
-    //     status: status as string,
-    //   },
-    // })
-    // return participantEntity
+    await this.prismaClient.pair.upsert({
+      where: {
+        id,
+      },
+      update: {
+        name,
+      },
+      create: {
+        id,
+        name,
+      },
+    })
+
+    await this.prismaClient.pairParticipant.deleteMany({
+      where: {
+        pairID: id,
+      },
+    })
+    await this.prismaClient.pairParticipant.createMany({
+      data: participants,
+    })
+
     return pair
   }
 
-  public async find(participantID: UUID) {
-    const participantRecord = await this.prismaClient.participant.findUnique({
-      where: { id: participantID.value },
+  public async find(id: UUID) {
+    const pairRecord = await this.prismaClient.pair.findUnique({
+      where: {
+        id: id.value,
+      },
+      include: {
+        participants: {
+          include: {
+            participant: true,
+          },
+        },
+      },
     })
 
-    if (participantRecord === null) {
+    if (pairRecord === null) {
       return null
     }
 
-    return new Participant({
-      id: UUID.restore(participantRecord.id),
-      mailAddress: new ParticipantMailAddress(participantRecord.mailAddress),
-      name: new ParticipantName(participantRecord.name),
-      status: new ParticipantStatus(
-        participantRecord.status as '在籍中' | '休会中' | '退会済み',
-      ),
-    })
+    return new Pair(
+      UUID.restore(pairRecord.id),
+      pairRecord.participants.map((pairParticipant) => {
+        const participant = pairParticipant.participant
+
+        return new Participant({
+          id: UUID.restore(participant.id),
+          name: new ParticipantName(participant.name),
+          mailAddress: new ParticipantMailAddress(participant.mailAddress),
+          status: new ParticipantStatus(participant.status as ParticipantType),
+        })
+      }),
+      new PairName('a'),
+    )
   }
 }

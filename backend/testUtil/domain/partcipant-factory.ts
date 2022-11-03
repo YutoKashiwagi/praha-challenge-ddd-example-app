@@ -27,21 +27,23 @@ export const mockedParticipant = (
 }
 
 export const seedParticipants = async (prisma: PrismaClient, participants: Participant[]) => {
-  for (const participant of participants) {
-    const {
-      id,
-      mailAddress,
-      name,
-      status,
-    } = participant.getAllProperties()
+  const participantsForCreateMany = participants.map((participant) => {
+      const {
+        id,
+        mailAddress,
+        name,
+        status
+      } = participant.getAllProperties()
 
-    await prisma.participant.create({
-      data: {
+      return {
         id,
         mailAddress,
         name,
         status
       }
     })
-  }
+
+  await prisma.participant.createMany({
+    data: participantsForCreateMany
+  })
 }
