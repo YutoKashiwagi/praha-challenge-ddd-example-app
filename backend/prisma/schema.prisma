@@ -9,7 +9,30 @@ generator client {
 }
 
 model SomeData {
-  id        String    @id
+  id       String  @id
   required Boolean
   number   Int     @db.SmallInt
+}
+
+model Participant {
+  id              String            @id
+  name            String
+  mailAddress     String            @unique
+  status          String // TODO: 別テーブルにする
+  PairParticipant PairParticipant[]
+}
+
+model Pair {
+  id           String            @id
+  name         String            @unique
+  participants PairParticipant[]
+}
+
+model PairParticipant {
+  pairID        String
+  participantID String
+  pair          Pair        @relation(fields: [pairID], references: [id])
+  participant   Participant @relation(fields: [participantID], references: [id])
+
+  @@id([pairID, participantID])
 }
